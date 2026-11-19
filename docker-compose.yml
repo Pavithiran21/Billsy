@@ -1,0 +1,49 @@
+# Billsy on your machine in one command:
+#
+#   docker compose up --build
+#   docker compose exec app npm run seed:dev      # sample data: Kaveri Studio and Demo Traders
+#
+# then open http://localhost:4000 (the demo log-in is at /demo; every seeded account's password is
+# DEMO_PASSWORD below).
+# Email: set SMTP_* (e.g. a free Ethereal inbox) to see invitation, invoice and reset mail.
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: billsy-local-root
+      MYSQL_DATABASE: billsy
+    volumes:
+      - billsy-mysql:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-pbillsy-local-root']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '4000:4000'
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: billsy
+      DB_USER: root
+      DB_PASSWORD: billsy-local-root
+      JWT_SECRET: local-only-secret-change-me-0123456789abcdef
+      FRONTEND_URL: http://localhost:4000
+      DEMO_MODE: 'true'
+      DEMO_PASSWORD: billsy-demo-1
+      SMTP_HOST: ${SMTP_HOST:-smtp.ethereal.email}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-set-me}
+      SMTP_PASS: ${SMTP_PASS:-set-me}
+      SMTP_FROM: ${SMTP_FROM:-Billsy <no-reply@billsy.test>}
+
+volumes:
+  billsy-mysql:
