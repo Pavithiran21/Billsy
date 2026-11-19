@@ -178,3 +178,7 @@ Free services sleep after 15 minutes without traffic, so the first visit after t
 - `Billsy-owner-demo.webm`, `Billsy-accountant-demo.webm`, `Billsy-staff-demo.webm`: one walkthrough per role
 
 <!-- To embed: edit this README on GitHub and drag the .webm files from the workspace videos/ folder here. -->
+
+## License
+
+Copyright (c) 2026 R.Pavithiran. All rights reserved. The source is public so you can read it and see how it is built. Please ask before copying, reusing or redistributing it.
