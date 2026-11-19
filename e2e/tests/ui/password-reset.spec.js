@@ -24,7 +24,9 @@ test('forgot password: the emailed link sets a new password that then logs in', 
   await page.getByLabel('New password').fill(newPassword);
   await page.getByLabel('Confirm').fill(newPassword);
   await page.getByRole('button', { name: 'Save new password' }).click();
-  await expect(page.getByRole('button', { name: 'Save new password' })).toHaveCount(0);
+  // Wait for the success message, not for the button to vanish: while the request is in
+  // flight the button reads "Saving…", so it would vanish before the password is stored.
+  await expect(page.getByText('Password changed.')).toBeVisible();
 
   await logIn(page, people.owner, newPassword);
 });
