@@ -104,7 +104,7 @@ Create `backend/.env`:
 | `DEMO_SMTP_HOST`, `DEMO_SMTP_PORT`, `DEMO_SMTP_USER`, `DEMO_SMTP_PASS`, `DEMO_SMTP_FROM` | Inbox for mail to `.test` addresses, so demo mail never goes to a real server |
 | `TRUST_PROXY` | Optional. `loopback` (default) or the number of proxies in front, e.g. `1` on Render, so rate limits key on the visitor's IP |
 | `STATIC_DIR` | Optional. A built `frontend/dist`; the API then serves the app too (the Docker image sets it) |
-| `DB_SSL_CA` | Optional. The CA certificate (PEM) of a hosted MySQL that requires TLS, such as Aiven |
+| `DB_SSL_CA` | Optional. The CA certificate (PEM) of a hosted MySQL that requires TLS, such as TiDB Cloud (ISRG Root X1) |
 
 Then:
 
@@ -166,9 +166,9 @@ npm test        # writes .env.test, creates and seeds billsy_test, starts the AP
 
 One free [Render](https://render.com) web service from the `Dockerfile` (see [`render.yaml`](render.yaml)): the API serves the built frontend, so the app, the API and the refresh cookie share one origin, with no CORS or cross-site cookies. Migrations run on every start.
 
-- **Database:** a hosted MySQL 8.4 such as Aiven's free plan. Create a `billsy_demo` database, and set `DB_*` and `DB_SSL_CA` (Aiven's CA certificate). Use a real MySQL, not a MySQL-compatible engine: the numbering depends on InnoDB row locks.
+- **Database:** [TiDB Cloud Starter](https://www.pingcap.com/tidb-cloud-starter/) (free, MySQL 8.0 compatible, runs in pessimistic mode like InnoDB). Create a `billsy_demo` database, set `DB_*` and `DB_SSL_CA` (the ISRG Root X1 certificate), and allow access from anywhere so Render can connect. The numbering depends on row locks (`SELECT ... FOR UPDATE`); the API specs, including ten invoices issued at the same moment and five simultaneous payments, pass on TiDB. A plain MySQL 8 also works.
 - **Settings:** `NODE_ENV=production`, `TRUST_PROXY=1`, `DEMO_MODE=true`, `FRONTEND_URL` = the service URL, and SMTP for real mail (Brevo) plus `DEMO_SMTP_*` (Ethereal) for the demo accounts' mail.
-- **Demo data:** run `npm run seed:demo` once from the service's Shell.
+- **Demo data:** free Render services have no Shell, so run `npx knex migrate:latest` and `npm run seed:demo` once from your own machine, with `ENV_FILE` pointing at an env file that has the TiDB `DB_*` values and `DB_NAME=billsy_demo`.
 
 Free services sleep after 15 minutes without traffic, so the first visit after that takes about a minute.
 

@@ -1,7 +1,9 @@
 # Render Blueprint: one free web service from the Dockerfile (API + built frontend on one origin).
-# The database is an external MySQL 8.4 (e.g. Aiven's free MySQL); create the billsy_demo database
-# there, set the secrets below in the Render dashboard, then run once from the service's Shell:
-#   npm run seed:demo
+# The database is TiDB Cloud Starter (free, MySQL 8.0 compatible) with the database billsy_demo. Free
+# Render services have no Shell, so seed it once from your own machine, with an env file that points
+# at the TiDB cluster (ENV_FILE=...):
+#   npx knex migrate:latest && npm run seed:demo
+# TiDB: allow access from anywhere (0.0.0.0/0) under the cluster's networking, so Render can connect.
 # Free services sleep after 15 minutes without traffic; the first visit then takes about a minute.
 services:
   - type: web
@@ -35,7 +37,7 @@ services:
       - key: DB_PASSWORD
         sync: false
       - key: DB_SSL_CA
-        sync: false # Aiven's CA certificate (PEM)
+        sync: false # the ISRG Root X1 certificate (PEM) that TiDB Cloud's certificate chains to, on one line with \n
       - key: DEMO_PASSWORD
         sync: false
       - key: SMTP_HOST
