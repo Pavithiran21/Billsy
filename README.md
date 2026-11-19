@@ -174,6 +174,8 @@ One free [Render](https://render.com) web service from the `Dockerfile` (see [`r
 
 Free services sleep after 15 minutes without traffic, so the first visit after that takes about a minute.
 
+**Email on free hosting:** Render's free web services block outbound SMTP (ports 25, 465 and 587), so "Email invoice" answers "Email not sent" on the live demo. Issuing, payments, credit notes, PDFs and reports all work. Emails work when you run Billsy locally or on a paid instance.
+
 ## Demo videos
 
 - `Billsy-full-workflow.webm`: an Owner signs up a business and invites the team, Staff issue a CGST + SGST invoice (showing the rounding) and an IGST invoice and record a part payment, the Owner issues a credit note, emails the invoice and cancels one, and the Accountant reads the audit log, the GST summary and the CSV
