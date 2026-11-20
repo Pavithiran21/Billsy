@@ -166,10 +166,13 @@ npm test        # writes .env.test, creates and seeds billsy_test, starts the AP
 
 ## Deploy
 
-One free [Render](https://render.com) web service from the `Dockerfile` (see [`render.yaml`](render.yaml)): the API serves the built frontend, so the app, the API and the refresh cookie share one origin, with no CORS or cross-site cookies. Migrations run on every start.
+The frontend runs on [Vercel](https://vercel.com) and the API on [Render](https://render.com), and the browser still sees one origin: [`frontend/vercel.json`](frontend/vercel.json) forwards `/api/*` to the Render service, so the refresh cookie (SameSite=Strict) works with no CORS or cross-site cookies.
+
+- **Frontend (Vercel):** import the repository, set the Root Directory to `frontend` (framework Vite, build `npm run build`, output `dist`). `vercel.json` also sends every other path to `index.html` for React Router and sets the page's security headers. If the Render service is renamed, change its URL in `vercel.json`.
+- **API (Render):** one free web service from `Dockerfile.api` (see [`render.yaml`](render.yaml)). Migrations run on every start. The full `Dockerfile` (API plus built frontend on one origin) is what `docker-compose.yml` and CI use.
 
 - **Database:** [TiDB Cloud Starter](https://www.pingcap.com/tidb-cloud-starter/) (free, MySQL 8.0 compatible, runs in pessimistic mode like InnoDB). Create a `billsy_demo` database, set `DB_*` and `DB_SSL_CA` (the ISRG Root X1 certificate), and allow access from anywhere so Render can connect. The numbering depends on row locks (`SELECT ... FOR UPDATE`); the API specs, including ten invoices issued at the same moment and five simultaneous payments, pass on TiDB. A plain MySQL 8 also works.
-- **Settings:** `NODE_ENV=production`, `TRUST_PROXY=1`, `DEMO_MODE=true`, `FRONTEND_URL` = the service URL, and SMTP for real mail (Brevo) plus `DEMO_SMTP_*` (Ethereal) for the demo accounts' mail.
+- **Settings:** `NODE_ENV=production`, `TRUST_PROXY=2` (Vercel, then Render's proxy), `DEMO_MODE=true`, `FRONTEND_URL` = the Vercel URL, and SMTP for real mail (Brevo) plus `DEMO_SMTP_*` (Ethereal) for the demo accounts' mail.
 - **Demo data:** free Render services have no Shell, so run `npx knex migrate:latest` and `npm run seed:demo` once from your own machine, with `ENV_FILE` pointing at an env file that has the TiDB `DB_*` values and `DB_NAME=billsy_demo`.
 
 Free services sleep after 15 minutes without traffic, so the first visit after that takes about a minute.
