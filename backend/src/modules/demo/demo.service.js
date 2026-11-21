@@ -1,4 +1,3 @@
-const { env } = require('../../config/env');
 const { AppError } = require('../../utils/AppError');
 const { createSession } = require('../auth/auth.service');
 const { userRepository } = require('../users/user.repository');
@@ -14,16 +13,14 @@ const DEMO_ACCOUNTS = [
 const DEMO_ROLES = DEMO_ACCOUNTS.map((account) => account.role);
 
 /**
- * What the /demo page shows: each account's email and the demo-only password (shown on purpose,
- * see CLAUDE.md), plus the Ethereal inbox that receives mail for .test addresses.
+ * What the /demo page shows: one "Log in as" button per role, with the account's name and email.
+ * No password or inbox login is sent: the buttons log in without one, and a public page that prints
+ * credentials gets flagged as phishing by Google Safe Browsing (it happened to the live demo, Nov 2026).
  * The route exists only when DEMO_MODE=true.
  */
 function listAccounts() {
   return {
-    accounts: DEMO_ACCOUNTS.map(({ role, label, name, email }) => ({ role, label, name, email, password: env.DEMO_PASSWORD })),
-    inbox: env.DEMO_SMTP_USER
-      ? { url: 'https://ethereal.email/login', user: env.DEMO_SMTP_USER, password: env.DEMO_SMTP_PASS }
-      : null,
+    accounts: DEMO_ACCOUNTS.map(({ role, label, name, email }) => ({ role, label, name, email })),
   };
 }
 

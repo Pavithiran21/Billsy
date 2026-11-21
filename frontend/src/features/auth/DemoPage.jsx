@@ -64,22 +64,6 @@ export function DemoPage() {
               </button>
             ))}
           </div>
-          <p className="muted xs" style={{ marginBottom: 6 }}>
-            Or log in on the Log in page as{' '}
-            {data.accounts.map((account, index) => (
-              <span key={account.role}>
-                <span className="mono">{account.email}</span>
-                {index < data.accounts.length - 1 ? ', ' : ''}
-              </span>
-            ))}{' '}
-            with the demo password <span className="mono">{data.accounts[0]?.password}</span>.
-          </p>
-          {data.inbox ? (
-            <p className="muted xs" style={{ marginBottom: 6 }}>
-              Emails to demo addresses land in the demo Ethereal inbox: <a href={data.inbox.url}>ethereal.email</a>, user{' '}
-              <span className="mono">{data.inbox.user}</span>, password <span className="mono">{data.inbox.password}</span>.
-            </p>
-          ) : null}
           <p className="muted xs">
             Demo accounts can't change their email or password, leave the business or delete it, and Demo Traders can't be deactivated.{' '}
             <Link to="/">Back to Log in</Link>
