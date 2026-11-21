@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Pavithiran21/Billsy/actions/workflows/ci.yml/badge.svg)](https://github.com/Pavithiran21/Billsy/actions/workflows/ci.yml)
 
-**Live demo: [billsy-murex.vercel.app/demo](https://billsy-murex.vercel.app/demo)** (log in as an Owner, an Accountant or Staff in one click). It runs on free hosting, so the first load after a quiet spell can take about a minute.
+**Live demo: [billsy-gst.vercel.app/demo](https://billsy-gst.vercel.app/demo)** (log in as an Owner, an Accountant or Staff in one click). It runs on free hosting, so the first load after a quiet spell can take about a minute.
 
 GST billing and invoicing for small Indian businesses. An owner registers the business with its GSTIN and state, invites staff and an accountant, and issues GST-correct invoices with PDFs emailed to customers. Billsy tracks payments and credit notes, and hands the accountant clean sales and GST reports.
 
